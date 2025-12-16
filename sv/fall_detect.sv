@@ -1,113 +1,115 @@
 module fall_detect #(
-    parameter CLK_FREQ_HZ = 50_000_000, // Frequência do clock da FPGA (Ex: 50MHz ou 27MHz)
-    parameter STILL_TIME_MS = 2000      // Tempo que deve ficar imóvel (2 segundos)
+    // Taxa de amostragem do acelerômetro (equivale ao busy_wait_us do C)
+    parameter SAMPLE_RATE_HZ = 50,      // 50 Hz → 20 ms
+    parameter STILL_TIME_MS  = 300       // Igual ao seu C
 )(
     input  logic        clk,
-    input  logic        rst_n,          // Reset ativo em nível baixo
-    
-    // Entradas do Acelerômetro (Valores brutos 16-bit signed)
-    input  logic        data_valid,     // Pulso de 1 ciclo quando novos dados chegam
+    input  logic        rst_n,
+
+    // Entradas do acelerômetro
+    input  logic        data_valid,      // 1 pulso por amostra
     input  logic signed [15:0] ax,
     input  logic signed [15:0] ay,
     input  logic signed [15:0] az,
 
-    // Configuração de Limiares (Podem ser registradores configuráveis via SPI/I2C ou fixos)
-    // Nota: Devem ser o valor ao QUADRADO para evitar raiz quadrada
-    input  logic [31:0] impact_thresh_sq, 
+    // Limiares AO QUADRADO
+    input  logic [31:0] impact_thresh_sq,
     input  logic [31:0] still_thresh_sq,
 
-    output logic        fall_detected   // Pulso de saída quando queda confirmada
+    output logic        fall_detected    // Pulso de 1 amostra
 );
 
-    // --- 1. Cálculo da Magnitude (Pipeline) ---
-    // Usamos 32 bits porque (2^15)^2 * 3 cabe em 32 bits unsigned.
+    // ============================================================
+    // 1. Cálculo da magnitude ao quadrado (sem raiz)
+    // ============================================================
     logic [31:0] ax_sq, ay_sq, az_sq;
     logic [31:0] mag_sq;
     logic        mag_valid;
 
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            ax_sq <= 0; ay_sq <= 0; az_sq <= 0;
+            ax_sq <= 0;
+            ay_sq <= 0;
+            az_sq <= 0;
             mag_sq <= 0;
-            mag_valid <= 0;
+            mag_valid <= 1'b0;
         end else if (data_valid) begin
-            // Estágio 1: Elevar ao quadrado
             ax_sq <= ax * ax;
             ay_sq <= ay * ay;
             az_sq <= az * az;
-            mag_valid <= 1'b1; // Sinaliza que o pipeline avançou
+            mag_sq <= (ax * ax) + (ay * ay) + (az * az);
+            mag_valid <= 1'b1;
         end else begin
-            mag_valid <= 1'b0; // Só calculamos quando há dado novo
+            mag_valid <= 1'b0;
         end
     end
 
-    // Estágio 2: Soma (combinacional ou registrado, aqui registrado no processamento da FSM)
-    wire [31:0] current_mag_sq = ax_sq + ay_sq + az_sq;
+    // ============================================================
+    // 2. Temporizador baseado em AMOSTRAS
+    // ============================================================
+    localparam int TIME_SAMPLES =
+        (STILL_TIME_MS * SAMPLE_RATE_HZ) / 1000;
 
+    logic [$clog2(TIME_SAMPLES+1)-1:0] timer_cnt;
 
-    // --- 2. Temporizador ---
-    localparam TIME_CYCLES = (CLK_FREQ_HZ / 1000) * STILL_TIME_MS;
-    logic [$clog2(TIME_CYCLES)-1:0] timer_cnt;
-    logic timer_en, timer_rst;
-
-    always_ff @(posedge clk or negedge rst_n) begin
-        if (!rst_n) timer_cnt <= 0;
-        else if (timer_rst) timer_cnt <= 0;
-        else if (timer_en && mag_valid) timer_cnt <= timer_cnt + 1; // Incrementa a cada amostra
-        // Nota: Se data_valid for muito rápido, o contador deve ser baseado em clk real
-        // Se data_valid for lento (ex: 100Hz), ajustamos a constante TIME_CYCLES.
-    end
-
-    // --- 3. Máquina de Estados (FSM) ---
+    // ============================================================
+    // 3. Máquina de Estados (FSM)
+    // ============================================================
     typedef enum logic [1:0] {
-        IDLE,           // Esperando Impacto
-        WAIT_STILL,     // Impacto detectado, verificando imobilidade
-        ALARM           // Queda confirmada
+        IDLE,
+        WAIT_STILL,
+        ALARM
     } state_t;
 
     state_t state, next_state;
 
-    // Lógica Sequencial da FSM
+    // FSM sequencial
     always_ff @(posedge clk or negedge rst_n) begin
-        if (!rst_n) state <= IDLE;
-        else if (mag_valid) state <= next_state; // Só muda de estado quando chega dado novo
+        if (!rst_n)
+            state <= IDLE;
+        else if (mag_valid)
+            state <= next_state;
     end
 
-    // Lógica Combinacional da FSM
+    // Contador de tempo (amostras)
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n)
+            timer_cnt <= 0;
+        else if (state == IDLE)
+            timer_cnt <= 0;
+        else if (state == WAIT_STILL && mag_valid)
+            timer_cnt <= timer_cnt + 1;
+    end
+
+    // FSM combinacional
     always_comb begin
-        next_state = state;
+        next_state    = state;
         fall_detected = 1'b0;
-        timer_en = 1'b0;
-        timer_rst = 1'b0;
 
         case (state)
+            // ----------------------------------------------------
             IDLE: begin
-                timer_rst = 1'b1;
-                // Se magnitude > impacto (Lembra: comparamos quadrados!)
-                if (current_mag_sq > impact_thresh_sq) begin
+                if (mag_sq > impact_thresh_sq)
                     next_state = WAIT_STILL;
-                end
             end
 
+            // ----------------------------------------------------
             WAIT_STILL: begin
-                timer_en = 1'b1;
-                
-                // Se houve movimento brusco, reseta (conforme seu código C: else impact_time = 0)
-                if (current_mag_sq >= still_thresh_sq) begin
+                // Se voltou a se mexer → cancela
+                if (mag_sq >= still_thresh_sq)
                     next_state = IDLE;
-                end
-                // Se o tempo passou (conversão de millisegundos para ciclos/amostras)
-                // Assumindo aqui que timer conta amostras. Se contar clk, a lógica muda levemente.
-                else if (timer_cnt >= TIME_CYCLES) begin
+                // Se ficou imóvel tempo suficiente → queda
+                else if (timer_cnt >= TIME_SAMPLES)
                     next_state = ALARM;
-                end
             end
 
+            // ----------------------------------------------------
             ALARM: begin
-                fall_detected = 1'b1;
-                next_state = IDLE; // Retorna ao início ou fica travado até reset externo
+                fall_detected = 1'b1; // pulso único
+                next_state = IDLE;
             end
         endcase
     end
 
 endmodule
+
