@@ -13,28 +13,48 @@
 #include "lib/rfm96.h"
 
 // thresholds em "raw" do MPU6050
-#define IMPACT_THRESHOLD   40960   // ~2.5g
-#define STILL_THRESHOLD     6500   // ~0.4g
-#define STILL_TIME_MS        300   // tempo parado após impacto
+//#define IMPACT_THRESHOLD   40960   // ~2.5g
+//#define STILL_THRESHOLD     6500   // ~0.4g
+//#define STILL_TIME_MS        300   // tempo parado após impacto
+
+#define IMPACT_THRESHOLD      40960
+#define STILL_THRESHOLD        6500
+
+#define IMPACT_THRESHOLD_SQ  ((uint32_t)(IMPACT_THRESHOLD) * (IMPACT_THRESHOLD))
+#define STILL_THRESHOLD_SQ   ((uint32_t)(STILL_THRESHOLD)  * (STILL_THRESHOLD))
+
+#define STILL_TIME_MS         300
 
 static uint32_t impact_time = 0;
 
-bool fall_detect(mpu6050_data *d) {
-    float ax = d->ax;
-    float ay = d->ay;
-    float az = d->az;
+bool fall_detect(mpu6050_data *d)
+{
+    int32_t ax = (int32_t)d->ax;
+    int32_t ay = (int32_t)d->ay;
+    int32_t az = (int32_t)d->az;
 
-    uint32_t mag = (uint32_t)sqrtf(ax*ax + ay*ay + az*az);
+    /* --- escreve no acelerador --- */
+    fall_detect_ax_write(ax);
+    fall_detect_ay_write(ay);
+    fall_detect_az_write(az);
 
-    if (mag > IMPACT_THRESHOLD && impact_time == 0) {
+    /* pulso data_valid (igual você testou) */
+    fall_detect_data_valid_write(1);
+    fall_detect_data_valid_write(0);
+
+    /* leitura direta */
+    uint32_t mag_sq = fall_detect_mag_sq_read();
+
+    /* --- lógica ORIGINAL --- */
+    if (mag_sq > IMPACT_THRESHOLD_SQ && impact_time == 0) {
         impact_time = timer0_value_read();
-        printf("Impacto detectado!");
+        printf("Impacto detectado!\n");
     }
 
     if (impact_time != 0) {
         uint32_t now = timer0_value_read();
 
-        if (mag < STILL_THRESHOLD) {
+        if (mag_sq < STILL_THRESHOLD_SQ) {
             if ((impact_time - now) > STILL_TIME_MS * 1000) {
                 impact_time = 0;
                 return true;
@@ -102,4 +122,3 @@ int main(void) {
 
     return 0;
 }
-

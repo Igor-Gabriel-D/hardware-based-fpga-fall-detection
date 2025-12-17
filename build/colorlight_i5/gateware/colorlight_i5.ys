@@ -1,7 +1,8 @@
 verilog_defaults -push
 verilog_defaults -add -defer
+read_verilog -sv /home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/sv/fall_detect.sv
 read_verilog /home/igor/igor/prog/embarcatech/fpga/pythondata-cpu-vexriscv/pythondata_cpu_vexriscv/verilog/VexRiscv.v
-read_verilog /home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/gateware/colorlight_i5.v
+read_verilog /home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/gateware/colorlight_i5.v
 verilog_defaults -pop
 attrmap -tocase keep -imap keep="true" keep=1 -imap keep="false" keep=0 -remove keep=0
 

@@ -2,7 +2,7 @@ readline.o: \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/bios/readline.c \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/stdlib.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/machine/ieeefp.h \
- /home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/../libc/picolibc.h \
+ /home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/../libc/picolibc.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/_ansi.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/newlib.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/config.h \
@@ -34,7 +34,7 @@ readline.o: \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libbase/uart.h
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/stdlib.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/machine/ieeefp.h:
-/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/../libc/picolibc.h:
+/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/../libc/picolibc.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/_ansi.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/newlib.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/config.h:

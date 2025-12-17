@@ -3,7 +3,7 @@ udivmoddi4.o: \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-compiler_rt/pythondata_software_compiler_rt/data/lib/builtins/int_lib.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/limits.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/newlib.h \
- /home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/../libc/picolibc.h \
+ /home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/../libc/picolibc.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/cdefs.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/machine/_default_types.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/features.h \
@@ -21,7 +21,7 @@ udivmoddi4.o: \
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-compiler_rt/pythondata_software_compiler_rt/data/lib/builtins/int_lib.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/limits.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/newlib.h:
-/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/../libc/picolibc.h:
+/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/../libc/picolibc.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/cdefs.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/machine/_default_types.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/features.h:

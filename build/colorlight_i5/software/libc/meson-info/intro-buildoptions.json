@@ -317,25 +317,49 @@
     "description": "Maximum number of linker processes to run or 0 for no limit"
   },
   {
-    "name": "b_lto",
+    "name": "b_colorout",
+    "value": "always",
+    "section": "base",
+    "machine": "any",
+    "choices": [
+      "auto",
+      "always",
+      "never"
+    ],
+    "type": "combo",
+    "description": "Use colored output"
+  },
+  {
+    "name": "b_pie",
     "value": false,
     "section": "base",
     "machine": "any",
     "type": "boolean",
-    "description": "Use link time optimization"
+    "description": "Build executables as position independent"
   },
   {
-    "name": "b_pgo",
-    "value": "off",
+    "name": "b_asneeded",
+    "value": true,
     "section": "base",
     "machine": "any",
-    "choices": [
-      "off",
-      "generate",
-      "use"
-    ],
-    "type": "combo",
-    "description": "Use profile guided optimization"
+    "type": "boolean",
+    "description": "Use -Wl,--as-needed when linking"
+  },
+  {
+    "name": "b_lundef",
+    "value": true,
+    "section": "base",
+    "machine": "any",
+    "type": "boolean",
+    "description": "Use -Wl,--no-undefined when linking"
+  },
+  {
+    "name": "b_lto_threads",
+    "value": 0,
+    "section": "base",
+    "machine": "any",
+    "type": "integer",
+    "description": "Use multiple threads for Link Time Optimization"
   },
   {
     "name": "b_ndebug",
@@ -351,12 +375,20 @@
     "description": "Disable asserts"
   },
   {
-    "name": "b_pch",
-    "value": true,
+    "name": "b_sanitize",
+    "value": [],
+    "section": "base",
+    "machine": "any",
+    "type": "array",
+    "description": "Code sanitizer to use"
+  },
+  {
+    "name": "b_coverage",
+    "value": false,
     "section": "base",
     "machine": "any",
     "type": "boolean",
-    "description": "Use precompiled headers"
+    "description": "Enable coverage tracking."
   },
   {
     "name": "b_staticpic",
@@ -367,65 +399,33 @@
     "description": "Build static libraries as position independent"
   },
   {
-    "name": "b_sanitize",
-    "value": [],
+    "name": "b_lto",
+    "value": false,
     "section": "base",
     "machine": "any",
-    "type": "array",
-    "description": "Code sanitizer to use"
+    "type": "boolean",
+    "description": "Use link time optimization"
   },
   {
-    "name": "b_colorout",
-    "value": "always",
+    "name": "b_pch",
+    "value": true,
+    "section": "base",
+    "machine": "any",
+    "type": "boolean",
+    "description": "Use precompiled headers"
+  },
+  {
+    "name": "b_pgo",
+    "value": "off",
     "section": "base",
     "machine": "any",
     "choices": [
-      "auto",
-      "always",
-      "never"
+      "off",
+      "generate",
+      "use"
     ],
     "type": "combo",
-    "description": "Use colored output"
-  },
-  {
-    "name": "b_lto_threads",
-    "value": 0,
-    "section": "base",
-    "machine": "any",
-    "type": "integer",
-    "description": "Use multiple threads for Link Time Optimization"
-  },
-  {
-    "name": "b_asneeded",
-    "value": true,
-    "section": "base",
-    "machine": "any",
-    "type": "boolean",
-    "description": "Use -Wl,--as-needed when linking"
-  },
-  {
-    "name": "b_pie",
-    "value": false,
-    "section": "base",
-    "machine": "any",
-    "type": "boolean",
-    "description": "Build executables as position independent"
-  },
-  {
-    "name": "b_lundef",
-    "value": true,
-    "section": "base",
-    "machine": "any",
-    "type": "boolean",
-    "description": "Use -Wl,--no-undefined when linking"
-  },
-  {
-    "name": "b_coverage",
-    "value": false,
-    "section": "base",
-    "machine": "any",
-    "type": "boolean",
-    "description": "Enable coverage tracking."
+    "description": "Use profile guided optimization"
   },
   {
     "name": "build.c_args",
@@ -484,8 +484,8 @@
       "-I/home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libbase",
       "-I/home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/include",
       "-I/home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software",
-      "-I/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include",
-      "-I/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/../libc",
+      "-I/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include",
+      "-I/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/../libc",
       "-I/home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/cores/cpu/vexriscv",
       "-fexceptions",
       "-Wpragmas"
@@ -519,12 +519,12 @@
       "-I/home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libbase",
       "-I/home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/include",
       "-I/home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software",
-      "-I/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include",
-      "-I/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/../libc",
+      "-I/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include",
+      "-I/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/../libc",
       "-I/home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/cores/cpu/vexriscv",
       "-fexceptions",
       "-Wpragmas",
-      "-L/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include"
+      "-L/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include"
     ],
     "section": "compiler",
     "machine": "host",
