@@ -3,7 +3,7 @@ main.o: \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/tinystdio/stdio.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/inttypes.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/newlib.h \
- /home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/../libc/picolibc.h \
+ /home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/../libc/picolibc.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/config.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/machine/ieeefp.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/features.h \
@@ -28,17 +28,17 @@ main.o: \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/include/system.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/cores/cpu/vexriscv/system.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/cores/cpu/vexriscv/csr-defs.h \
- /home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/generated/soc.h \
+ /home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/generated/soc.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/include/irq.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/cores/cpu/vexriscv/irq.h \
- /home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/generated/csr.h \
+ /home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/generated/csr.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/include/hw/common.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/bios/boot.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/bios/readline.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/bios/helpers.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/bios/command.h \
- /home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/generated/mem.h \
- /home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/generated/git.h \
+ /home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/generated/mem.h \
+ /home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/generated/git.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libbase/console.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libbase/crc.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libbase/memtest.h \
@@ -58,7 +58,7 @@ main.o: \
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/tinystdio/stdio.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/inttypes.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/newlib.h:
-/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/../libc/picolibc.h:
+/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/../libc/picolibc.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/config.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/machine/ieeefp.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/features.h:
@@ -83,17 +83,17 @@ main.o: \
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/include/system.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/cores/cpu/vexriscv/system.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/cores/cpu/vexriscv/csr-defs.h:
-/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/generated/soc.h:
+/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/generated/soc.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/include/irq.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/cores/cpu/vexriscv/irq.h:
-/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/generated/csr.h:
+/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/generated/csr.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/include/hw/common.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/bios/boot.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/bios/readline.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/bios/helpers.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/bios/command.h:
-/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/generated/mem.h:
-/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/generated/git.h:
+/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/generated/mem.h:
+/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/generated/git.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libbase/console.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libbase/crc.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libbase/memtest.h:

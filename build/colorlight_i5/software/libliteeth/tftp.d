@@ -3,7 +3,7 @@ tftp.o: \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/tinystdio/stdio.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/inttypes.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/newlib.h \
- /home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/../libc/picolibc.h \
+ /home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/../libc/picolibc.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/config.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/machine/ieeefp.h \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/features.h \
@@ -24,12 +24,12 @@ tftp.o: \
  /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/string.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libbase/progress.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libliteeth/udp.h \
- /home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/generated/soc.h \
+ /home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/generated/soc.h \
  /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libliteeth/tftp.h
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/tinystdio/stdio.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/inttypes.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/newlib.h:
-/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/../libc/picolibc.h:
+/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/../libc/picolibc.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/config.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/machine/ieeefp.h:
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/features.h:
@@ -50,5 +50,5 @@ tftp.o: \
 /home/igor/igor/prog/embarcatech/fpga/pythondata-software-picolibc/pythondata_software_picolibc/data/newlib/libc/include/sys/string.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libbase/progress.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libliteeth/udp.h:
-/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include/generated/soc.h:
+/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include/generated/soc.h:
 /home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libliteeth/tftp.h:

@@ -33,6 +33,8 @@ from litedram.phy import GENSDRPHY, HalfRateGENSDRPHY
 from liteeth.phy.ecp5rgmii import LiteEthPHYRGMII
 
 
+from fall_detect_csr import FallDetectCSR
+
 # CRG ----------------------------------------------------------------------------------------------
 
 class _CRG(LiteXModule):
@@ -115,6 +117,12 @@ class BaseSoC(SoCCore):
         board = board.lower()
         assert board in ["i5", "i9"]
         platform = colorlight_i5.Platform(board=board, revision=revision, toolchain=toolchain)
+        
+        #################################################################
+        platform.add_source("sv/fall_detect.sv")  # adiciona o módulo Verilog
+        self.fall_detect = FallDetectCSR()         # instancia o CSR gerado (Python)
+        self.submodules += self.fall_detect        # adiciona como submódulo
+        #################################################################
 
         # CRG --------------------------------------------------------------------------------------
         with_usb_pll   = kwargs.get("uart_name", None) == "usb_acm"

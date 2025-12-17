@@ -13,7 +13,7 @@ PICOLIBC_DIRECTORY=/home/igor/igor/prog/embarcatech/fpga/pythondata-software-pic
 PICOLIBC_FORMAT=integer
 COMPILER_RT_DIRECTORY=/home/igor/igor/prog/embarcatech/fpga/pythondata-software-compiler_rt/pythondata_software_compiler_rt/data
 export BUILDINC_DIRECTORY
-BUILDINC_DIRECTORY=/home/igor/igor/prog/embarcatech/fpga/fall_detection/build/colorlight_i5/software/include
+BUILDINC_DIRECTORY=/home/igor/igor/prog/embarcatech/fpga/hardware-based-fpga-fall-detection/build/colorlight_i5/software/include
 LIBC_DIRECTORY=/home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libc
 LIBCOMPILER_RT_DIRECTORY=/home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libcompiler_rt
 LIBBASE_DIRECTORY=/home/igor/igor/prog/embarcatech/fpga/litex/litex/soc/software/libbase
