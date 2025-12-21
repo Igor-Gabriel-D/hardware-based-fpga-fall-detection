@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(Alarm-Sensor-Faul-Detection Alarm-Sensor-Faul-Detection.c )
+add_executable(Alarm-Sensor-Faul-Detection Alarm-Sensor-Faul-Detection.c rfm96.c)
 
 pico_set_program_name(Alarm-Sensor-Faul-Detection "Alarm-Sensor-Faul-Detection")
 pico_set_program_version(Alarm-Sensor-Faul-Detection "0.1")
@@ -56,7 +56,13 @@ target_include_directories(Alarm-Sensor-Faul-Detection PRIVATE
 # Add any user requested libraries
 target_link_libraries(Alarm-Sensor-Faul-Detection 
         hardware_spi
-        hardware_pwm
+        hardware_i2c
+        hardware_dma
+        hardware_pio
+        hardware_interp
+        hardware_timer
+        hardware_watchdog
+        hardware_clocks
         )
 
 pico_add_extra_outputs(Alarm-Sensor-Faul-Detection)

@@ -1,132 +1,113 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "pico/stdlib.h"
-#include "hardware/pwm.h"
-#include "hardware/clocks.h"
-#include "hardware/spi.h"
+#include "hardware/i2c.h"
+#include "rfm96.h"
 
-// --- Bibliotecas de Terceiros ---
-// Nota: Você precisará incluir a biblioteca LoRa no seu projeto CMake
-#include "lora.h" 
 
-#define BUZZER_PIN 21
-#define FREQ_QUEDA 1000   
-#define FREQ_IMPACTO 2800  
-
-// Configuração SPI LoRa
-#define LORA_SPI_PORT spi0
 #define PIN_MISO 16
 #define PIN_CS   17
 #define PIN_SCK  18
 #define PIN_MOSI 19
 #define PIN_RST  20
-#define PIN_DIO0 26
+#define PIN_DIO0 8   
 
-int modo_atual = 0; 
-absolute_time_t last_heartbeat;
-absolute_time_t proximo_evento;
-bool buzzer_ligado = false;
+#define LORA_FREQUENCY 915E6
+#define SEND_INTERVAL_MS 10000
 
-void pwm_init_buzzer(uint pin, uint freq) {
-    gpio_set_function(pin, GPIO_FUNC_PWM);
-    uint slice_num = pwm_gpio_to_slice_num(pin);
-    pwm_config config = pwm_get_default_config();
-    pwm_config_set_clkdiv(&config, clock_get_hz(clk_sys) / (freq * 4096));
-    pwm_init(slice_num, &config, true);
-    pwm_set_gpio_level(pin, 0);
-}
+#define SDA_PIN 14
+#define SCL_PIN 15
+#define I2C_PORT i2c1
+#define OLED_ADDR 0x3C
+#define OLED_WIDTH 128
+#define OLED_HEIGHT 64
 
-void processar_comando(const char* comando) {
-    if (strstr(comando, "queda")) {
-        modo_atual = 1;
-        pwm_init_buzzer(BUZZER_PIN, FREQ_QUEDA);
-        proximo_evento = get_absolute_time();
-        printf(">> LORA: MODO QUEDA ATIVADO\n");
-    } 
-    else if (strstr(comando, "impacto")) {
-        modo_atual = 2;
-        pwm_init_buzzer(BUZZER_PIN, FREQ_IMPACTO);
-        printf(">> LORA: MODO IMPACTO ATIVADO\n");
-    } 
-    else if (strstr(comando, "parar")) {
-        modo_atual = 0;
-        pwm_set_gpio_level(BUZZER_PIN, 0);
-        printf(">> LORA: SILENCIAR\n");
+
+
+struct repeating_timer timer;
+int cont = 0;
+bool start = true;
+
+
+
+
+
+
+// ----------------------------------------------------------
+
+// Callback para timer repetitivo mostrando "Aguardando..."
+
+// ----------------------------------------------------------
+
+
+
+// ----------------------------------------------------------
+
+void iniciar() {
+    stdio_init_all();
+
+
+    i2c_init(I2C_PORT, 400 * 1000);
+    gpio_set_function(SDA_PIN, GPIO_FUNC_I2C);
+    gpio_set_function(SCL_PIN, GPIO_FUNC_I2C);
+    gpio_pull_up(SDA_PIN);
+    gpio_pull_up(SCL_PIN);
+
+
+
+
+
+    rfm96_config_t lora_cfg = {
+        .spi_instance = spi0,
+        .pin_miso = PIN_MISO,
+        .pin_cs   = PIN_CS,
+        .pin_sck  = PIN_SCK,
+        .pin_mosi = PIN_MOSI,
+        .pin_rst  = PIN_RST,
+        .pin_dio0 = PIN_DIO0,
+        .frequency = LORA_FREQUENCY
+    };
+
+    if (!lora_init(lora_cfg)) {
+        while (1);
     }
+
+
+    sleep_ms(1000);
+
+    // Limpa display e inicia recepção LoRa contínua
+
+    lora_start_rx_continuous();
 }
+
+
+// ----------------------------------------------------------
+
+
+
+// ----------------------------------------------------------
 
 int main() {
-    stdio_init_all();
-    pwm_init_buzzer(BUZZER_PIN, FREQ_QUEDA);
+    int recebido;
 
-    // --- Inicialização LoRa ---
-    lora_struct_t lora;
-    lora.spi = LORA_SPI_PORT;
-    lora.rst = PIN_RST;
-    lora.cs = PIN_CS;
-    lora.dio0 = PIN_DIO0;
-    lora.frequency = 915E6; // Frequência Brasil
+    iniciar();
 
-    if (lora_init(&lora) != 0) {
-        printf("Erro ao iniciar LoRa!\n");
-    } else {
-        printf("LoRa Online e Escutando...\n");
-    }
-
-    last_heartbeat = get_absolute_time();
-    proximo_evento = get_absolute_time();
-
-    char buffer_serial[40];
-    int idx_serial = 0;
 
     while (true) {
-        // 1. Heartbeat
-        if (absolute_time_diff_us(last_heartbeat, get_absolute_time()) > 5000000) {
-            printf("[STATUS] Aguardando sinal LoRa... Modo atual: %d\n", modo_atual);
-            last_heartbeat = get_absolute_time();
-        }
+        int len = lora_receive_bytes((uint8_t *)&recebido, sizeof(recebido));
+        if (len == sizeof(recebido)) {
+            if (start) {
+                cancel_repeating_timer(&timer);
 
-        // 2. RECEBIMENTO VIA LORA
-        if (lora_received(&lora)) {
-            char lora_msg[64];
-            int len = lora_receive_packet(&lora, (uint8_t*)lora_msg, sizeof(lora_msg)-1);
-            if (len > 0) {
-                lora_msg[len] = '\0';
-                printf("Recebido via LoRa: %s\n", lora_msg);
-                processar_comando(lora_msg);
+                start = false;
             }
+            printf("Valor recebido: %d\n", recebido);
         }
 
-        // 3. BACKUP VIA SERIAL (Ainda útil para testes)
-        int c = getchar_timeout_us(0);
-        if (c != PICO_ERROR_TIMEOUT) {
-            if (c == '\n' || c == '\r') {
-                if (idx_serial > 0) {
-                    buffer_serial[idx_serial] = '\0';
-                    processar_comando(buffer_serial);
-                    idx_serial = 0;
-                }
-            } else if (idx_serial < 39 && c >= 32) {
-                buffer_serial[idx_serial++] = (char)c;
-            }
-        }
-
-        // 4. Lógica de Som Não-Bloqueante
-        absolute_time_t agora = get_absolute_time();
-        if (modo_atual == 1) {
-            if (absolute_time_diff_us(proximo_evento, agora) > 0) {
-                buzzer_ligado = !buzzer_ligado;
-                pwm_set_gpio_level(BUZZER_PIN, buzzer_ligado ? 2048 : 0);
-                proximo_evento = delayed_by_ms(agora, 500);
-            }
-        } 
-        else if (modo_atual == 2) {
-            pwm_set_gpio_level(BUZZER_PIN, 2048);
-        } 
-        else {
-            pwm_set_gpio_level(BUZZER_PIN, 0);
-        }
-
-        sleep_us(100);
+        //printf("Aguardando dados...\n");
     }
+
+    return 0;
 }

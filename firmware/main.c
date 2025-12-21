@@ -49,6 +49,9 @@ bool fall_detect(mpu6050_data *d)
     if (mag_sq > IMPACT_THRESHOLD_SQ && impact_time == 0) {
         impact_time = timer0_value_read();
         printf("Impacto detectado!\n");
+
+	rfm96_send((uint8_t*)"FALL", 4);
+
     }
 
     if (impact_time != 0) {
@@ -66,6 +69,10 @@ bool fall_detect(mpu6050_data *d)
 
     return false;
 }
+
+
+
+
 
 int main(void) {
 #ifdef CONFIG_CPU_HAS_INTERRUPT
@@ -109,14 +116,14 @@ int main(void) {
             printf("Erro de leitura MPU6050");
             continue;
         }
-
+   	//printf("ANTES SEND\n");
+	//rfm96_send((uint8_t*)"FALL", 4);
+	//printf("DEPOIS SEND\n");
         if (fall_detect(&d)) {
             printf(">>> QUEDA DETECTADA! <<<");
 
-            const char *msg = "FALL";
-            rfm96_send((uint8_t*)msg, 4);
+   
         }
-
         busy_wait_us(20000); // 20 ms
     }
 
