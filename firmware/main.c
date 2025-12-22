@@ -25,7 +25,18 @@
 
 #define STILL_TIME_MS         300
 
+#define FREEFALL_THRESHOLD        3000     // ~0.15g
+#define FREEFALL_THRESHOLD_SQ     (FREEFALL_THRESHOLD * FREEFALL_THRESHOLD)
+
+
 static uint32_t impact_time = 0;
+
+static inline uint64_t rdcycle64(void) {
+    uint32_t lo, hi;
+    asm volatile ("rdcycle %0"  : "=r"(lo));
+    asm volatile ("rdcycleh %0" : "=r"(hi));
+    return ((uint64_t)hi << 32) | lo;
+}
 
 bool fall_detect(mpu6050_data *d)
 {
@@ -33,17 +44,25 @@ bool fall_detect(mpu6050_data *d)
     int32_t ay = (int32_t)d->ay;
     int32_t az = (int32_t)d->az;
 
+    //uint32_t t0 = timer_us();
     /* --- escreve no acelerador --- */
+    volatile uint32_t mag_sq;
+    /* loop pesado */
+    //printf("BEGIN\n");
+    
     fall_detect_ax_write(ax);
     fall_detect_ay_write(ay);
     fall_detect_az_write(az);
 
-    /* pulso data_valid (igual você testou) */
     fall_detect_data_valid_write(1);
     fall_detect_data_valid_write(0);
 
-    /* leitura direta */
-    uint32_t mag_sq = fall_detect_mag_sq_read();
+    mag_sq = fall_detect_mag_sq_read();
+    
+    //printf("END\n");
+
+
+
 
     /* --- lógica ORIGINAL --- */
     if (mag_sq > IMPACT_THRESHOLD_SQ && impact_time == 0) {
@@ -84,10 +103,9 @@ int main(void) {
 
 #ifdef CSR_TIMER0_BASE
     timer0_en_write(0);
-    timer0_reload_write(0);
-    timer0_load_write(CONFIG_CLOCK_FREQUENCY / 1000000);
+    timer0_reload_write(0xffffffff);
+    timer0_load_write(0xffffffff);
     timer0_en_write(1);
-    timer0_update_value_write(1);
 #endif
 
     busy_wait_us(300000);
@@ -108,7 +126,19 @@ int main(void) {
     }
 
     printf("Sistema iniciado. Monitorando...");
+	printf("Teste timer...\n");
 
+	uint32_t a, b;
+
+	timer0_update_value_write(1);
+	a = timer0_value_read();
+
+	busy_wait_us(100000); // 100 ms
+
+	timer0_update_value_write(1);
+	b = timer0_value_read();
+
+	printf("Timer diff = %lu\n", a - b);
     while (1) {
         mpu6050_data d;
 
