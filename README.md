@@ -182,7 +182,7 @@ Após iniciar o terminal:
 
 ---
 
-## Autores do Projeto:
+## Autores do Projeto
 
 João Emanuel Cândido Gonçalves da Silva | 202521511890004
 
