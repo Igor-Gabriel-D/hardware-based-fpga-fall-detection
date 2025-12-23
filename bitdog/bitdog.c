@@ -31,10 +31,7 @@
 #define FREQ_QUEDA 1000   
 #define FREQ_IMPACTO 2800 
 
-typedef struct {
-    int16_t temperatura;
-    int16_t umidade;
-} aht10;
+
 
 struct repeating_timer timer;
 int cont = 0;
@@ -204,49 +201,12 @@ void mostrar_fall() {
 
 // ----------------------------------------------------------
 
-// Mostra temperatura e umidade no display
-void imprimedisplay(float temp, float umid) {
-    int temp_int = (int)temp;
-    int temp_frac = (int)((fabsf(temp) - abs(temp_int)) * 100 + 0.5f);
-
-    int umid_int = (int)umid;
-    int umid_frac = (int)((fabsf(umid) - abs(umid_int)) * 100 + 0.5f);
-
-    char temp_str[32];
-    char umid_str[32];
-
-    sprintf(temp_str, "Temp: %d.%02dC", temp_int, temp_frac);
-    sprintf(umid_str,  "Umid: %d.%02d%%", umid_int, umid_frac);
-
-    limpar_display();
-    ssd1306_draw_string(ssd, 0, 8, temp_str);
-    ssd1306_draw_string(ssd, 0, 24, umid_str);
-    render_on_display(ssd, &frame_area);
-}
-
-// ----------------------------------------------------------
 
 int main() {
-    aht10 recebido;
-
-
 
     iniciar();
     aguardar();
 
-    /*
-    while (true) {
-        int len = lora_receive_bytes((uint8_t *)&recebido, sizeof(recebido));
-        if (len == sizeof(recebido)) {
-            if (start) {
-                cancel_repeating_timer(&timer);
-                limpar_display();
-                start = false;
-            }
-            imprimedisplay(recebido.temperatura / 100.0f, recebido.umidade / 100.0f);
-        }
-    }
-    */
     uint8_t rx_buf[16];
 
     while (true) {

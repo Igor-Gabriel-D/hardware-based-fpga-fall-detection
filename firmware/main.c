@@ -38,18 +38,53 @@ static inline uint64_t rdcycle64(void) {
     return ((uint64_t)hi << 32) | lo;
 }
 
+static uint32_t get_timer_value(void) {
+    timer0_update_value_write(1);
+    return timer0_value_read();
+}
+
+static void start_timer(void) {
+    timer0_en_write(0);
+    timer0_load_write(0xffffffff);
+    timer0_reload_write(0);
+    timer0_en_write(1);
+}
+
+typedef enum {
+    STATE_IDLE = 0,
+    STATE_FREEFALL,
+    STATE_IMPACT
+} fall_state_t;
+
+static fall_state_t fall_state = STATE_IDLE;
+static uint32_t freefall_time = 0;
+//static uint32_t impact_time = 0;
+
+#define LOOP_PERIOD_MS      20
+#define STILL_TIME_MS       300
+
+#define STILL_COUNT   (STILL_TIME_MS / LOOP_PERIOD_MS)
+#define FREEFALL_COUNT_MIN  2    // 2 * 20ms = 40ms
+
+static uint32_t impact_cnt = 0;
+static uint32_t still_cnt = 0;
+static uint32_t freefall_cnt = 0;
+static bool freefall_armed = false;
+static bool freefall_reported = false;
+
+
 bool fall_detect(mpu6050_data *d)
 {
-    int32_t ax = (int32_t)d->ax;
-    int32_t ay = (int32_t)d->ay;
-    int32_t az = (int32_t)d->az;
+    int32_t ax = d->ax;
+    int32_t ay = d->ay;
+    int32_t az = d->az;
 
-    //uint32_t t0 = timer_us();
-    /* --- escreve no acelerador --- */
-    volatile uint32_t mag_sq;
-    /* loop pesado */
-    //printf("BEGIN\n");
-    
+    uint32_t mag_sq;
+    uint32_t start, end, duration;
+
+    start_timer();
+    start = get_timer_value();
+    /* acelerador */
     fall_detect_ax_write(ax);
     fall_detect_ay_write(ay);
     fall_detect_az_write(az);
@@ -58,38 +93,68 @@ bool fall_detect(mpu6050_data *d)
     fall_detect_data_valid_write(0);
 
     mag_sq = fall_detect_mag_sq_read();
-    
-    //printf("END\n");
+    end = get_timer_value();
+    duration = start - end;
+    //printf("[HW] Ciclos de processamento: %lu\n", (long unsigned int)duration);
+    /* ===============================
+       1. QUEDA LIVRE
+       =============================== */
+    if (mag_sq < FREEFALL_THRESHOLD_SQ) {
+        if (freefall_cnt < 255)
+            freefall_cnt++;
 
-
-
-
-    /* --- lógica ORIGINAL --- */
-    if (mag_sq > IMPACT_THRESHOLD_SQ && impact_time == 0) {
-        impact_time = timer0_value_read();
-        printf("Impacto detectado!\n");
-
-	rfm96_send((uint8_t*)"FALL", 4);
-
+        if (freefall_cnt >= FREEFALL_COUNT_MIN){
+	    freefall_armed = true;
+	    if (!freefall_reported) {
+                freefall_reported = true;
+                printf(">>> FREE FALL <<<\n");
+                //rfm96_send((uint8_t*)"FREE", 4);
+            }
+	}
+            //freefall_armed = true;
+    } else {
+        freefall_cnt = 0;
     }
 
-    if (impact_time != 0) {
-        uint32_t now = timer0_value_read();
+    /* ===============================
+       2. IMPACTO (INALTERADO)
+       =============================== */
+    if (mag_sq > IMPACT_THRESHOLD_SQ && impact_cnt == 0) {
+        impact_cnt = 1;
+        still_cnt = 0;
+        freefall_reported = false;
+        
+	if (freefall_armed) {
+            printf("IMPACT AFTER FREE FALL\n");
+            rfm96_send((uint8_t*)"FALL", 4);
+        } else {
+            printf("IMPACT ONLY\n");
+        }
+    }
 
+    /* ===============================
+       3. IMOBILIDADE
+       =============================== */
+    if (impact_cnt) {
         if (mag_sq < STILL_THRESHOLD_SQ) {
-            if ((impact_time - now) > STILL_TIME_MS * 1000) {
-                impact_time = 0;
+            still_cnt++;
+            if (still_cnt >= STILL_COUNT) {
+                impact_cnt = 0;
+                still_cnt = 0;
+                freefall_armed = false;
                 return true;
             }
         } else {
-            impact_time = 0;
+            /* movimento cancela */
+            impact_cnt = 0;
+            still_cnt = 0;
+            freefall_armed = false;
+	    freefall_reported = false;
         }
     }
 
     return false;
 }
-
-
 
 
 
@@ -101,12 +166,7 @@ int main(void) {
 
     uart_init();
 
-#ifdef CSR_TIMER0_BASE
-    timer0_en_write(0);
-    timer0_reload_write(0xffffffff);
-    timer0_load_write(0xffffffff);
-    timer0_en_write(1);
-#endif
+
 
     busy_wait_us(300000);
 
@@ -128,17 +188,7 @@ int main(void) {
     printf("Sistema iniciado. Monitorando...");
 	printf("Teste timer...\n");
 
-	uint32_t a, b;
 
-	timer0_update_value_write(1);
-	a = timer0_value_read();
-
-	busy_wait_us(100000); // 100 ms
-
-	timer0_update_value_write(1);
-	b = timer0_value_read();
-
-	printf("Timer diff = %lu\n", a - b);
     while (1) {
         mpu6050_data d;
 
@@ -146,9 +196,7 @@ int main(void) {
             printf("Erro de leitura MPU6050");
             continue;
         }
-   	//printf("ANTES SEND\n");
-	//rfm96_send((uint8_t*)"FALL", 4);
-	//printf("DEPOIS SEND\n");
+
         if (fall_detect(&d)) {
             printf(">>> QUEDA DETECTADA! <<<");
 

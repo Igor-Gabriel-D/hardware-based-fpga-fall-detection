@@ -48,10 +48,8 @@ bool fall_detect(mpu6050_data *d) {
     float ax = d->ax;
     float ay = d->ay;
     float az = d->az;
-    //printf("BEGIN\n");
 
     uint32_t mag = (uint32_t)sqrtf(ax*ax + ay*ay + az*az);
-    //printf("END\n");
     end = get_timer_value();
     duration = start - end;
     printf("[HW] Ciclos de processamento: %lu\n", (long unsigned int)duration);
