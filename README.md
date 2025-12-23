@@ -179,3 +179,11 @@ Após iniciar o terminal:
 - Atuação Física: Implementação de um sistema de airbag acoplado para proteção imediata.
 - Conectividade: Otimização da taxa de transmissão de dados via tecnologia LoRa.
 - Portabilidade: Redução das dimensões do dispositivo (compactação) e implementação de alimentação via bateria dedicada, eliminando a dependência atual do cabo USB.
+
+---
+
+## Autores do Projeto:
+
+João Emanuel Cândido Gonçalves da Silva | 202521511890004
+
+Igor Gabriel Dantas Rocha | 202521511890009
