@@ -23,6 +23,7 @@ O foco do projeto é demonstrar o uso de FPGAs para detecção de eventos críti
 
 hardware-based-fpga-fall-detection/
 
+´´´
 ├── build/
 │   └── colorlight_i5/
 │       └── gateware e bitstream gerados
@@ -52,6 +53,7 @@ hardware-based-fpga-fall-detection/
 │   └── fall_detect.sv
 │
 └── README.txt
+´´´
 
 ---
 
